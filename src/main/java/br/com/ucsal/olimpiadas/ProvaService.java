@@ -1,5 +1,7 @@
 package br.com.ucsal.olimpiadas;
 
+import java.util.List;
+
 public class ProvaService {
     private long proximoId = 1;
     public Prova cadastrar(String titulo){
@@ -10,5 +12,8 @@ public class ProvaService {
         prova.setId(proximoId++);
         prova.setTitulo(titulo);
         return prova;
+    }
+    public List<Questao> buscarQuestoes(Long provaId, List<Questao> questoes){
+        return questoes.stream().filter(q -> q.getProvaId() == provaId).toList();
     }
 }

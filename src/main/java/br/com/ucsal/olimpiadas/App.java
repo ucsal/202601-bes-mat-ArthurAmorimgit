@@ -136,7 +136,9 @@ public class App {
 		if (provaId == null)
 			return;
 
-		var questoesDaProva = questoes.stream().filter(q -> q.getProvaId() == provaId).toList();
+		ProvaService provaService = new ProvaService();
+
+		var questoesDaProva = provaService.buscarQuestoes(provaId,questoes);
 
 		if (questoesDaProva.isEmpty()) {
 			System.out.println("esta prova não possui questões cadastradas");
@@ -155,8 +157,7 @@ public class App {
 			System.out.println(q.getEnunciado());
 
 			System.out.println("Posição inicial:");
-			imprimirTabuleiroFen(q.getFenInicial());
-
+			TabuleiroCriar.imprimir(q.getFenInicial());
 			for (var alt : q.getAlternativas()) {
 			    System.out.println(alt);
 			}
@@ -180,22 +181,20 @@ public class App {
 
 		tentativas.add(tentativa);
 
-		int nota = calcularNota(tentativa);
+		TentativaService service = new TentativaService();
+		int nota = service.calcularNota(tentativa);
 		System.out.println("\n--- Fim da Prova ---");
 		System.out.println("Nota (acertos): " + nota + " / " + tentativa.getRespostas().size());
 	}
 
-	public static int calcularNota(Tentativa tentativa) {
-	TentativaService service = new TentativaService();
-	int nota = service.calcularNota(tentativa);
-	return nota;
-	}
+
 
 	static void listarTentativas() {
 		System.out.println("\n--- Tentativas ---");
+		TentativaService service = new TentativaService();
 		for (var t : tentativas) {
 			System.out.printf("#%d | participante=%d | prova=%d | nota=%d/%d%n", t.getId(), t.getParticipanteId(),
-					t.getProvaId(), calcularNota(t), t.getRespostas().size());
+					t.getProvaId(), service.calcularNota(t), t.getRespostas().size());
 		}
 	}
 
@@ -241,41 +240,6 @@ public class App {
 			return null;
 		}
 	}
-
-	static void imprimirTabuleiroFen(String fen) {
-
-		String parteTabuleiro = fen.split(" ")[0];
-		String[] ranks = parteTabuleiro.split("/");
-
-		System.out.println();
-		System.out.println("    a b c d e f g h");
-		System.out.println("   -----------------");
-
-		for (int r = 0; r < 8; r++) {
-
-			String rank = ranks[r];
-			System.out.print((8 - r) + " | ");
-
-			for (char c : rank.toCharArray()) {
-
-				if (Character.isDigit(c)) {
-					int vazios = c - '0';
-					for (int i = 0; i < vazios; i++) {
-						System.out.print(". ");
-					}
-				} else {
-					System.out.print(c + " ");
-				}
-			}
-
-			System.out.println("| " + (8 - r));
-		}
-
-		System.out.println("   -----------------");
-		System.out.println("    a b c d e f g h");
-		System.out.println();
-	}
-
 
 	static void seed() {
 
