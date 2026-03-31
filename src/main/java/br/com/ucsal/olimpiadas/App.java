@@ -58,11 +58,9 @@ public class App {
 			return;
 		}
 
-		var p = new Participante();
-		p.setId(proximoParticipanteId++);
-		p.setNome(nome);
-		p.setEmail(email);
+		ParticipanteService service = new ParticipanteService();
 
+		var p = service.cadastrar(nome,email);
 		participantes.add(p);
 		System.out.println("Participante cadastrado: " + p.getId());
 	}
@@ -112,14 +110,9 @@ public class App {
 			System.out.println("alternativa inválida");
 			return;
 		}
+		QuestaoService service = new QuestaoService();
 
-		var q = new Questao();
-		q.setId(proximaQuestaoId++);
-		q.setProvaId(provaId);
-		q.setEnunciado(enunciado);
-		q.setAlternativas(alternativas);
-		q.setAlternativaCorreta(correta);
-
+		var q = service.cadastrar(provaId, enunciado,alternativas,correta);
 		questoes.add(q);
 
 		System.out.println("Questão cadastrada: " + q.getId() + " (na prova " + provaId + ")");
