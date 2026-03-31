@@ -74,10 +74,9 @@ public class App {
 			return;
 		}
 
-		var prova = new Prova();
-		prova.setId(proximaProvaId++);
-		prova.setTitulo(titulo);
+		ProvaService service = new ProvaService();
 
+		var prova = service.cadastrar(titulo);
 		provas.add(prova);
 		System.out.println("Prova criada: " + prova.getId());
 	}
@@ -187,12 +186,9 @@ public class App {
 	}
 
 	public static int calcularNota(Tentativa tentativa) {
-		int acertos = 0;
-		for (var r : tentativa.getRespostas()) {
-			if (r.isCorreta())
-				acertos++;
-		}
-		return acertos;
+	TentativaService service = new TentativaService();
+	int nota = service.calcularNota(tentativa);
+	return nota;
 	}
 
 	static void listarTentativas() {
