@@ -15,6 +15,8 @@ public class App {
 	static final List<Prova> provas = new ArrayList<>();
 	static final List<Questao> questoes = new ArrayList<>();
 	static final List<Tentativa> tentativas = new ArrayList<>();
+	static final CalculadoraNota CALCULADORA = new CalcularNotaSimples();
+	static final CorrecaoQuestao CORRECAO_OBJETICA = new CorrecaoObjetiva();
 
 	private static final Scanner in = new Scanner(System.in);
 
@@ -58,11 +60,9 @@ public class App {
 			return;
 		}
 
-		var p = new Participante();
-		p.setId(proximoParticipanteId++);
-		p.setNome(nome);
-		p.setEmail(email);
+		ParticipanteService service = new ParticipanteService();
 
+		var p = service.cadastrar(nome,email);
 		participantes.add(p);
 		System.out.println("Participante cadastrado: " + p.getId());
 	}
@@ -76,10 +76,9 @@ public class App {
 			return;
 		}
 
-		var prova = new Prova();
-		prova.setId(proximaProvaId++);
-		prova.setTitulo(titulo);
+		ProvaService service = new ProvaService();
 
+		var prova = service.cadastrar(titulo);
 		provas.add(prova);
 		System.out.println("Prova criada: " + prova.getId());
 	}
@@ -112,14 +111,10 @@ public class App {
 			System.out.println("alternativa inválida");
 			return;
 		}
+		QuestaoService service = new QuestaoService();
 
-		var q = new Questao();
-		q.setId(proximaQuestaoId++);
-		q.setProvaId(provaId);
-		q.setEnunciado(enunciado);
-		q.setAlternativas(alternativas);
-		q.setAlternativaCorreta(correta);
-
+		var q = service.cadastrar(provaId, enunciado,alternativas,correta);
+		q.setCorrecao(CORRECAO_OBJETICA);
 		questoes.add(q);
 
 		System.out.println("Questão cadastrada: " + q.getId() + " (na prova " + provaId + ")");
@@ -144,7 +139,9 @@ public class App {
 		if (provaId == null)
 			return;
 
-		var questoesDaProva = questoes.stream().filter(q -> q.getProvaId() == provaId).toList();
+		ProvaService provaService = new ProvaService();
+
+		var questoesDaProva = provaService.buscarQuestoes(provaId,questoes);
 
 		if (questoesDaProva.isEmpty()) {
 			System.out.println("esta prova não possui questões cadastradas");
@@ -163,8 +160,7 @@ public class App {
 			System.out.println(q.getEnunciado());
 
 			System.out.println("Posição inicial:");
-			imprimirTabuleiroFen(q.getFenInicial());
-
+			TabuleiroCriar.imprimir(q.getFenInicial());
 			for (var alt : q.getAlternativas()) {
 			    System.out.println(alt);
 			}
@@ -188,25 +184,20 @@ public class App {
 
 		tentativas.add(tentativa);
 
-		int nota = calcularNota(tentativa);
+		TentativaService service = new TentativaService(CALCULADORA);
+		int nota = service.calcularNota(tentativa);
 		System.out.println("\n--- Fim da Prova ---");
 		System.out.println("Nota (acertos): " + nota + " / " + tentativa.getRespostas().size());
 	}
 
-	public static int calcularNota(Tentativa tentativa) {
-		int acertos = 0;
-		for (var r : tentativa.getRespostas()) {
-			if (r.isCorreta())
-				acertos++;
-		}
-		return acertos;
-	}
+
 
 	static void listarTentativas() {
 		System.out.println("\n--- Tentativas ---");
+		TentativaService service = new TentativaService(CALCULADORA);
 		for (var t : tentativas) {
 			System.out.printf("#%d | participante=%d | prova=%d | nota=%d/%d%n", t.getId(), t.getParticipanteId(),
-					t.getProvaId(), calcularNota(t), t.getRespostas().size());
+					t.getProvaId(), service.calcularNota(t), t.getRespostas().size());
 		}
 	}
 
@@ -253,41 +244,6 @@ public class App {
 		}
 	}
 
-	static void imprimirTabuleiroFen(String fen) {
-
-		String parteTabuleiro = fen.split(" ")[0];
-		String[] ranks = parteTabuleiro.split("/");
-
-		System.out.println();
-		System.out.println("    a b c d e f g h");
-		System.out.println("   -----------------");
-
-		for (int r = 0; r < 8; r++) {
-
-			String rank = ranks[r];
-			System.out.print((8 - r) + " | ");
-
-			for (char c : rank.toCharArray()) {
-
-				if (Character.isDigit(c)) {
-					int vazios = c - '0';
-					for (int i = 0; i < vazios; i++) {
-						System.out.print(". ");
-					}
-				} else {
-					System.out.print(c + " ");
-				}
-			}
-
-			System.out.println("| " + (8 - r));
-		}
-
-		System.out.println("   -----------------");
-		System.out.println("    a b c d e f g h");
-		System.out.println();
-	}
-
-
 	static void seed() {
 
 		var prova = new Prova();
@@ -309,7 +265,8 @@ public class App {
 
 		q1.setAlternativas(new String[] { "A) Qh7#", "B) Qf5#", "C) Qc8#", "D) Qh8#", "E) Qe6#" });
 
-		q1.setAlternativaCorreta('C');
+
+		q1.setCorrecao(CORRECAO_OBJETICA);
 
 		questoes.add(q1);
 	}

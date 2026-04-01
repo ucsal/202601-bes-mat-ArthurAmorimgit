@@ -9,6 +9,7 @@ public class Questao {
 
 	private String enunciado;
 	private String[] alternativas = new String[5];
+	private CorrecaoQuestao correcao;
 	private char alternativaCorreta;
 
 	private String fenInicial;
@@ -56,16 +57,13 @@ public class Questao {
 		this.alternativas = Arrays.copyOf(alternativas, 5);
 	}
 
-	public char getAlternativaCorreta() {
-		return alternativaCorreta;
-	}
 
-	public void setAlternativaCorreta(char alternativaCorreta) {
-		this.alternativaCorreta = normalizar(alternativaCorreta);
-	}
 
 	public boolean isRespostaCorreta(char marcada) {
-		return normalizar(marcada) == alternativaCorreta;
+		if (correcao == null){
+			throw new IllegalStateException("Correção não definida para a questão");
+		}
+		return correcao.corrigir(this, normalizar(marcada));
 	}
 
 	public static char normalizar(char c) {
@@ -74,6 +72,23 @@ public class Questao {
 			throw new IllegalArgumentException("Alternativa deve estar entre A e E.");
 		}
 		return up;
+	}
+
+	public CorrecaoQuestao getCorrecao() {
+		return correcao;
+	}
+
+	public void setCorrecao(CorrecaoQuestao correcao) {
+		this.correcao = correcao;
+
+	}
+
+	public char getAlternativaCorreta() {
+		return alternativaCorreta;
+	}
+
+	public void setAlternativaCorreta(char alternativaCorreta) {
+		this.alternativaCorreta = alternativaCorreta;
 	}
 
 }
