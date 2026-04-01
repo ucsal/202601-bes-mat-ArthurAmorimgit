@@ -74,7 +74,7 @@ public class Questao {
 		return up;
 	}
 
-	public CorrecaoQuestao getCorrecao() {
+	public CorrecaoMultiplaEscolha getCorrecao() {
 		return correcao;
 	}
 
