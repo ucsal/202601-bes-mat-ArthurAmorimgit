@@ -192,7 +192,7 @@ public class App {
 
 	static void listarTentativas() {
 		System.out.println("\n--- Tentativas ---");
-		TentativaService service = new TentativaService();
+		TentativaService service = new TentativaService(new CalcularNotaSimples());
 		for (var t : tentativas) {
 			System.out.printf("#%d | participante=%d | prova=%d | nota=%d/%d%n", t.getId(), t.getParticipanteId(),
 					t.getProvaId(), service.calcularNota(t), t.getRespostas().size());
