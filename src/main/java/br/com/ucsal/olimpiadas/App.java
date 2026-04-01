@@ -112,6 +112,7 @@ public class App {
 		QuestaoService service = new QuestaoService();
 
 		var q = service.cadastrar(provaId, enunciado,alternativas,correta);
+		q.setCorrecao(new CorrecaoObjetiva());
 		questoes.add(q);
 
 		System.out.println("Questão cadastrada: " + q.getId() + " (na prova " + provaId + ")");
@@ -181,7 +182,7 @@ public class App {
 
 		tentativas.add(tentativa);
 
-		TentativaService service = new TentativaService();
+		TentativaService service = new TentativaService(new CalcularNotaSimples());
 		int nota = service.calcularNota(tentativa);
 		System.out.println("\n--- Fim da Prova ---");
 		System.out.println("Nota (acertos): " + nota + " / " + tentativa.getRespostas().size());
@@ -262,7 +263,8 @@ public class App {
 
 		q1.setAlternativas(new String[] { "A) Qh7#", "B) Qf5#", "C) Qc8#", "D) Qh8#", "E) Qe6#" });
 
-		q1.setAlternativaCorreta('C');
+
+		q1.setCorrecao(new CorrecaoObjetiva());
 
 		questoes.add(q1);
 	}

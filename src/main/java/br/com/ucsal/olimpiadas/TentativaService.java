@@ -1,14 +1,13 @@
 package br.com.ucsal.olimpiadas;
 
 public class TentativaService {
-    public int calcularNota(Tentativa tentativa){
-        int acertos = 0;
+   private CalculadoraNota calculadora;
+   public TentativaService(CalculadoraNota calculadora){
+       this.calculadora = calculadora;
+   }
 
-        for (var r : tentativa.getRespostas()){
-            if (r.isCorreta()){
-                acertos++;
-            }
-        }
-        return acertos;
+
+    public int calcularNota(Tentativa tentativa){
+      return calculadora.calcular(tentativa);
     }
 }

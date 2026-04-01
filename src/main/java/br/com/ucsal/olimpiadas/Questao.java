@@ -9,6 +9,7 @@ public class Questao {
 
 	private String enunciado;
 	private String[] alternativas = new String[5];
+	private CorrecaoQuestao correcao;
 	private char alternativaCorreta;
 
 	private String fenInicial;
@@ -56,16 +57,10 @@ public class Questao {
 		this.alternativas = Arrays.copyOf(alternativas, 5);
 	}
 
-	public char getAlternativaCorreta() {
-		return alternativaCorreta;
-	}
 
-	public void setAlternativaCorreta(char alternativaCorreta) {
-		this.alternativaCorreta = normalizar(alternativaCorreta);
-	}
 
 	public boolean isRespostaCorreta(char marcada) {
-		return normalizar(marcada) == alternativaCorreta;
+		return correcao.corrigir(this, normalizar(marcada));
 	}
 
 	public static char normalizar(char c) {
@@ -76,4 +71,20 @@ public class Questao {
 		return up;
 	}
 
+	public CorrecaoQuestao getCorrecao() {
+		return correcao;
+	}
+
+	public void setCorrecao(CorrecaoQuestao correcao) {
+		this.correcao = correcao;
+
+	}
+
+	public char getAlternativaCorreta() {
+		return alternativaCorreta;
+	}
+
+	public void setAlternativaCorreta(char alternativaCorreta) {
+		this.alternativaCorreta = alternativaCorreta;
+	}
 }
