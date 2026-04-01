@@ -15,6 +15,8 @@ public class App {
 	static final List<Prova> provas = new ArrayList<>();
 	static final List<Questao> questoes = new ArrayList<>();
 	static final List<Tentativa> tentativas = new ArrayList<>();
+	static final CalculadoraNota CALCULADORA = new CalcularNotaSimples();
+	static final CorrecaoQuestao CORRECAO_OBJETICA = new CorrecaoObjetiva();
 
 	private static final Scanner in = new Scanner(System.in);
 
@@ -112,7 +114,7 @@ public class App {
 		QuestaoService service = new QuestaoService();
 
 		var q = service.cadastrar(provaId, enunciado,alternativas,correta);
-		q.setCorrecao(new CorrecaoObjetiva());
+		q.setCorrecao(CORRECAO_OBJETICA);
 		questoes.add(q);
 
 		System.out.println("Questão cadastrada: " + q.getId() + " (na prova " + provaId + ")");
@@ -182,7 +184,7 @@ public class App {
 
 		tentativas.add(tentativa);
 
-		TentativaService service = new TentativaService(new CalcularNotaSimples());
+		TentativaService service = new TentativaService(CALCULADORA);
 		int nota = service.calcularNota(tentativa);
 		System.out.println("\n--- Fim da Prova ---");
 		System.out.println("Nota (acertos): " + nota + " / " + tentativa.getRespostas().size());
@@ -192,7 +194,7 @@ public class App {
 
 	static void listarTentativas() {
 		System.out.println("\n--- Tentativas ---");
-		TentativaService service = new TentativaService(new CalcularNotaSimples());
+		TentativaService service = new TentativaService(CALCULADORA);
 		for (var t : tentativas) {
 			System.out.printf("#%d | participante=%d | prova=%d | nota=%d/%d%n", t.getId(), t.getParticipanteId(),
 					t.getProvaId(), service.calcularNota(t), t.getRespostas().size());
@@ -264,7 +266,7 @@ public class App {
 		q1.setAlternativas(new String[] { "A) Qh7#", "B) Qf5#", "C) Qc8#", "D) Qh8#", "E) Qe6#" });
 
 
-		q1.setCorrecao(new CorrecaoObjetiva());
+		q1.setCorrecao(CORRECAO_OBJETICA);
 
 		questoes.add(q1);
 	}

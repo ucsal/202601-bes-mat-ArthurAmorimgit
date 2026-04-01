@@ -9,7 +9,7 @@ public class Questao {
 
 	private String enunciado;
 	private String[] alternativas = new String[5];
-	private CorrecaoMultiplaEscolha correcao;
+	private CorrecaoQuestao correcao;
 	private char alternativaCorreta;
 
 	private String fenInicial;
@@ -63,7 +63,7 @@ public class Questao {
 		if (correcao == null){
 			throw new IllegalStateException("Correção não definida para a questão");
 		}
-		return correcao.corrigir(normalizar(marcada), alternativaCorreta);
+		return correcao.corrigir(this, normalizar(marcada));
 	}
 
 	public static char normalizar(char c) {
@@ -74,11 +74,11 @@ public class Questao {
 		return up;
 	}
 
-	public CorrecaoMultiplaEscolha getCorrecao() {
+	public CorrecaoQuestao getCorrecao() {
 		return correcao;
 	}
 
-	public void setCorrecao(CorrecaoMultiplaEscolha correcao) {
+	public void setCorrecao(CorrecaoQuestao correcao) {
 		this.correcao = correcao;
 
 	}

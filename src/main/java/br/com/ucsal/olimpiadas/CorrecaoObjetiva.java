@@ -1,11 +1,10 @@
 package br.com.ucsal.olimpiadas;
 
-public class CorrecaoObjetiva implements CorrecaoMultiplaEscolha {
-
+public class CorrecaoObjetiva implements CorrecaoQuestao {
 
 
     @Override
-    public boolean corrigir(char resposta, char correta) {
-        return false;
+    public boolean corrigir(Questao questao, char resposta) {
+        return resposta == questao.getAlternativaCorreta();
     }
 }
