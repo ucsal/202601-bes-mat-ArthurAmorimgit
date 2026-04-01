@@ -60,6 +60,9 @@ public class Questao {
 
 
 	public boolean isRespostaCorreta(char marcada) {
+		if (correcao == null){
+			throw new IllegalStateException("Correção não definida para a questão");
+		}
 		return correcao.corrigir(this, normalizar(marcada));
 	}
 
